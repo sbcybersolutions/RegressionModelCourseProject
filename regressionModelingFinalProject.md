@@ -103,7 +103,7 @@ alt="Residuals vs Fitted Values" />
 
     check_model(model_adjusted)
 
-![](regressionModelingFinalProject_files/figure-markdown_strict/check-model-bigger-1.png)
+src= "check-model-bigger-1.png"
 
 -   Residuals are homoscedastic (constant variance).
 -   No major outliers or leverage issues.
