@@ -102,8 +102,13 @@ alt="Residuals vs Fitted Values" />
 ## Assumptions Check
 
     check_model(model_adjusted)
+<figure>
+    <img
+        src= "check-model-bigger-1.png"
+        alt = "Assumptions Check" />
+    <figcaption aria-hidden="true"> Model Assumptions Check</figcaption>
+</figure>
 
-src= "check-model-bigger-1.png"
 
 -   Residuals are homoscedastic (constant variance).
 -   No major outliers or leverage issues.
@@ -143,7 +148,7 @@ Q3: How confident are we?
 
 <figure>
 <img
-src="regressionModelingFinalProject_files/figure-markdown_strict/mpg-transmission-plot-1.png"
+src="mpg-transmission-plot-1.png"
 alt="MPG by Transmission Type" />
 <figcaption aria-hidden="true">MPG by Transmission Type</figcaption>
 </figure>
@@ -164,7 +169,7 @@ alt="MPG by Transmission Type" />
 
 <figure>
 <img
-src="regressionModelingFinalProject_files/figure-markdown_strict/adjusted-mpg-plot-1.png"
+src="adjusted-mpg-plot-1.png"
 alt="Adjusted MPG with Weight &amp; Horsepower Only" />
 <figcaption aria-hidden="true">Adjusted MPG with Weight &amp; Horsepower
 Only</figcaption>
