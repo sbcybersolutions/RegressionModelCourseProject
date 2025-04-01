@@ -1,0 +1,146 @@
+---
+title: 'Fuel Efficiency and Transmission Type: A Regression Analysis'
+author: "Christian Salafia"
+date: "2025-03-31"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, warning = FALSE, message = FALSE)
+library(tidyverse)
+library(broom)
+library(ggplot2)
+library(performance)
+library(car)
+library(ggpubr)
+```
+
+# Executive Summary
+
+In analyzing vehicle performance using the mtcars dataset, we examined the effect of transmission type (manual vs automatic) on fuel efficiency (measured in miles per gallon, MPG).
+
+- Manual transmissions are associated with significantly higher MPG
+
+- After adjusting for weight (wt) and horsepower (hp), manual cars average ~2.9 MPG more
+
+- The difference is statistically significant (p = 0.037) with a 95% CI of [0.19, 5.69]
+
+- Model diagnostics show good fit and no major violations of assumptions
+
+We conclude that manual transmissions are more fuel-efficient, even after accounting for other factors.
+
+# Data Preparation
+```{r}
+data("mtcars")
+
+mtcars <- mtcars |>
+  rownames_to_column(var = "model") |>
+  mutate(am = factor(am, labels = c("Automatic", "Manual")))
+```
+
+# Modeling Strategy
+
+We fit two models:
+
+- Model 1 (Simple): mpg ~ am
+- Model 2 (Adjusted): mpg ~ am + wt + hp
+
+This approach allows us to:
+
+- Estimate the raw difference in MPG by transmission
+- Control for potential confounders like car weight and engine power
+
+# Model Results
+
+## Simple Linear Regression
+
+```{r}
+model_simple <- lm(mpg ~ am, data = mtcars)
+tidy(model_simple)
+```
+
+## Adjusted Linear Regression
+
+```{r}
+model_adjusted <- lm(mpg ~ am + wt + hp, data = mtcars)
+tidy(model_adjusted)
+```
+
+## Confidence Interval & Model Metrics
+
+```{r}
+confint(model_adjusted)["amManual", ]
+
+glance(model_adjusted)
+```
+
+- The coefficient for amManual is statistically significant.
+- 95% Confidence Interval does not cross 0 → strong evidence of effect.
+- Adjusted R² ≈ 0.84 → excellent model fit
+
+# Diagnostics
+
+## Residual Plots
+
+```{r residual-plot, fig.cap= "Residuals vs Fitted Values", fig.width=7, fig.height=5}
+par(mfrow = c(2, 2))
+plot(model_adjusted)
+par(mfrow = c(1, 1))
+```
+
+## Assumptions Check
+```{r check-model-bigger, fig.width=10, fig.height=8}
+check_model(model_adjusted)
+```
+
+- Residuals are homoscedastic (constant variance).
+- No major outliers or leverage issues.
+- Q-Q plot suggests approximate normality
+
+# Conclusions
+
+Q1: Is a manual transmission better for MPG?
+
+- Yes. Manual cars are significantly more fuel-efficient than automatics.
+
+Q2: By how much?
+
+- 2.94 MPG more on average, with a 95% confidence interval of [0.19, 5.69], even after adjusting for vehicle weight and horsepower.
+
+Q3: How confident are we?
+
+- p-value: 0.037 → statistically significant
+- Model Fit: Adjusted R² = 0.839 → strong explanatory power
+- Diagnostics: No major violations detected
+
+# Appendix: Visualizations
+
+## MPG by Transmission Type
+
+```{r mpg-transmission-plot, fig.cap= "MPG by Transmission Type", fig.width=7, fig.height=5}
+ggplot(mtcars, aes(x = am, y = mpg, fill = am)) +
+  geom_boxplot(width = 0.5, alpha = 0.7, outlier.shape = NA) +
+  geom_jitter(width = 0.1, color = "black", alpha = 0.6) +
+  labs(
+    title = "MPG by Transmission Type",
+    x = "Transmission",
+    y = "Miles per Gallon (MPG)"
+  ) +
+  theme_minimal()
+```
+
+## Adjusted MPG with Weight & Horsepower Only
+
+```{r adjusted-mpg-plot, fig.cap= "Adjusted MPG with Weight & Horsepower Only", fig.width=7, fig.height=5}
+mtcars_aug <- augment(model_adjusted)
+
+ggplot(mtcars_aug, aes(x = am, y = mpg)) +
+  geom_boxplot(aes(fill = am), alpha = 0.4, outlier.shape = NA) +
+  geom_jitter(aes(size = wt, color = hp), width = 0.1, alpha = 0.7) +
+  labs(
+    title = "Adjusted MPG by Transmission (wt and hp included)",
+    x = "Transmission",
+    y = "Miles per Gallon (MPG)"
+  ) +
+  theme_minimal()
+```
