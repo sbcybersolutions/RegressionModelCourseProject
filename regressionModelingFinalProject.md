@@ -92,7 +92,7 @@ This approach allows us to:
 
 <figure>
 <img
-src="regressionModelingFinalProject_files/figure-markdown_strict/residual-plot-1.png"
+src="residual-plot-1.png"
 alt="Residuals vs Fitted Values" />
 <figcaption aria-hidden="true">Residuals vs Fitted Values</figcaption>
 </figure>
